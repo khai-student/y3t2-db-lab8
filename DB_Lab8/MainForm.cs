@@ -16,13 +16,18 @@ namespace DB_Lab6
         private PostgresDatabase _db = new PostgresDatabase();
         private bool _is_table_updating = false;
         private BindingSource _binding_source = null;
+        private BindingSource _sub_source = null;
+        private bool _update_sub_source = false;
         private string _sql = "";
+        private bool _join_enable = false;
 
         public MainForm()
         {
             InitializeComponent();
             _binding_source = new BindingSource();
+            _sub_source = new BindingSource();
             guiDGV.DataSource = _binding_source;
+            guiDGVJoin.DataSource = _sub_source;
             GetTablesList();
         }
 
@@ -47,6 +52,7 @@ namespace DB_Lab6
                 for (int col = 0; col < tables[row].Count; col++)
                 {
                     guiTables.Items.Add(tables[row][col]);
+                    guiJoinTable.Items.Add(tables[row][col]);
                 }
             }
 
@@ -73,7 +79,23 @@ namespace DB_Lab6
             guiSortGroupBox.Enabled = true;
             guiMathGroupBox.Enabled = true;
             guiFilterGroupBox.Enabled = true;
+            guiJoinGroupBox.Enabled = true;
 
+            if (_update_sub_source)
+            {
+                _sub_source.DataSource = _db.QueryDataTable(_sql);
+
+                foreach (DataColumn column in ((DataTable)_sub_source.DataSource).Columns)
+                {   // in first row there always column headers
+                    if (column.ColumnName.ToLower() == "id")
+                    {
+                        guiDGVJoin.Rows[0].Cells["id"].OwningColumn.Visible = false;
+                    }
+                }
+
+                _update_sub_source = false;
+                return;
+            }
             // if not called manually
             if (!(sender == null && e == null))
             {
@@ -91,6 +113,7 @@ namespace DB_Lab6
             guiMathColumn.Items.Clear();
             guiFilterColumn.Items.Clear();
             guiSearhPattern.Clear();
+            guiJoinMainColumn.Items.Clear();
 
             foreach (DataColumn column in ((DataTable)_binding_source.DataSource).Columns)
             {   // in first row there always column headers
@@ -105,6 +128,7 @@ namespace DB_Lab6
                     guiMathColumn.Items.Add(column.ColumnName.ToLower());
                     guiFilterColumn.Items.Add(column.ColumnName.ToLower());
                 }
+                guiJoinMainColumn.Items.Add(column.ColumnName.ToLower());
             }
             // managing search elements
             guiSearchColumn.SelectedIndex = 0;
@@ -114,6 +138,7 @@ namespace DB_Lab6
             guiMathColumn.SelectedIndex = 0;
             guiFilterColumn.SelectedIndex = 0;
             guiFilterPred.SelectedIndex = 2;
+            guiJoinMainColumn.SelectedItem = 0;
 
             _is_table_updating = false;
         }
@@ -306,6 +331,92 @@ namespace DB_Lab6
         private void MainForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void guiJoin_Click(object sender, EventArgs e)
+        {
+            _join_enable = true;
+        }
+
+        private void guiJoinTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_is_table_updating)
+            {
+                return;
+            }
+            _is_table_updating = true;
+
+            _sql = string.Format("SELECT * FROM {0};", guiJoinTable.SelectedItem.ToString());
+
+            DataTable table = _db.QueryDataTable(_sql);
+
+            guiJoinSubColumn.Items.Clear();
+            foreach (DataColumn column in table.Columns)
+            {   // in first row there always column headers
+                guiJoinSubColumn.Items.Add(column.ColumnName.ToLower());
+            }
+            guiJoinSubColumn.SelectedIndex = 0;
+
+            _is_table_updating = false;
+        }
+
+        private void guiDGV_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_is_table_updating || ! _join_enable)
+            {
+                return;
+            }
+            _is_table_updating = false;
+
+            try
+            {
+                string value = guiDGV.SelectedRows[0].Cells[guiJoinMainColumn.SelectedItem.ToString()].Value.ToString();
+                double number = 0;
+
+                if (double.TryParse(value, out number))
+                {
+                    _sql = string.Format("SELECT * FROM {0} WHERE {1} = {2};",
+                    guiJoinTable.SelectedItem.ToString(),
+                    guiJoinSubColumn.SelectedItem.ToString(),
+                    value);
+                }
+                else if (guiDGV.SelectedRows[0].Cells[guiJoinMainColumn.SelectedItem.ToString()] is DataGridViewCheckBoxCell)
+                {
+                    value = value.ToUpper();
+                    _sql = string.Format("SELECT * FROM {0} WHERE {1} = {2};",
+                    guiJoinTable.SelectedItem.ToString(),
+                    guiJoinSubColumn.SelectedItem.ToString(),
+                    value);
+                }
+
+                _is_table_updating = false;
+
+                _update_sub_source = true;
+                guiQueryTable_Click(null, null);
+
+                _is_table_updating = true;
+            }
+            catch
+            {
+                Logger.Info("Cannot select.");
+            }
+            finally
+            {
+                _is_table_updating = false;
+            }
+        }
+
+        private void guiJoinUpdate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _db.UpdateData((DataTable)_sub_source.DataSource);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Unable update.\n" + ex.Message);
+                throw;
+            }
         }
     }
 }

@@ -33,6 +33,11 @@
             System.Windows.Forms.GroupBox groupBox1;
             System.Windows.Forms.SplitContainer splitContainer2;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.guiJoinGroupBox = new System.Windows.Forms.GroupBox();
+            this.guiJoinSubColumn = new System.Windows.Forms.ComboBox();
+            this.guiJoinTable = new System.Windows.Forms.ComboBox();
+            this.guiJoinMainColumn = new System.Windows.Forms.ComboBox();
+            this.guiJoin = new System.Windows.Forms.Button();
             this.guiFilterGroupBox = new System.Windows.Forms.GroupBox();
             this.guiFilterValue = new System.Windows.Forms.NumericUpDown();
             this.guiFilterPred = new System.Windows.Forms.ComboBox();
@@ -55,6 +60,7 @@
             this.guiQueryTable = new System.Windows.Forms.Button();
             this.guiDGV = new System.Windows.Forms.DataGridView();
             this.guiDGVJoin = new System.Windows.Forms.DataGridView();
+            this.guiJoinUpdate = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             groupBox1 = new System.Windows.Forms.GroupBox();
@@ -63,18 +69,19 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            this.guiJoinGroupBox.SuspendLayout();
             this.guiFilterGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guiFilterValue)).BeginInit();
             this.guiMathGroupBox.SuspendLayout();
             this.guiSortGroupBox.SuspendLayout();
             this.guiSearchGroupBox.SuspendLayout();
             groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.guiDGV)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guiDGVJoin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(splitContainer2)).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.guiDGV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.guiDGVJoin)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -94,6 +101,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(this.guiJoinGroupBox);
             splitContainer1.Panel1.Controls.Add(this.guiFilterGroupBox);
             splitContainer1.Panel1.Controls.Add(this.guiMathGroupBox);
             splitContainer1.Panel1.Controls.Add(this.guiSortGroupBox);
@@ -103,10 +111,67 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Size = new System.Drawing.Size(708, 537);
+            splitContainer1.Size = new System.Drawing.Size(708, 693);
             splitContainer1.SplitterDistance = 177;
             splitContainer1.SplitterWidth = 3;
             splitContainer1.TabIndex = 100;
+            // 
+            // guiJoinGroupBox
+            // 
+            this.guiJoinGroupBox.Controls.Add(this.guiJoinSubColumn);
+            this.guiJoinGroupBox.Controls.Add(this.guiJoinTable);
+            this.guiJoinGroupBox.Controls.Add(this.guiJoinMainColumn);
+            this.guiJoinGroupBox.Controls.Add(this.guiJoinUpdate);
+            this.guiJoinGroupBox.Controls.Add(this.guiJoin);
+            this.guiJoinGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.guiJoinGroupBox.Enabled = false;
+            this.guiJoinGroupBox.Location = new System.Drawing.Point(0, 534);
+            this.guiJoinGroupBox.Name = "guiJoinGroupBox";
+            this.guiJoinGroupBox.Size = new System.Drawing.Size(177, 156);
+            this.guiJoinGroupBox.TabIndex = 9;
+            this.guiJoinGroupBox.TabStop = false;
+            this.guiJoinGroupBox.Text = "Joining";
+            // 
+            // guiJoinSubColumn
+            // 
+            this.guiJoinSubColumn.FormattingEnabled = true;
+            this.guiJoinSubColumn.Items.AddRange(new object[] {
+            "<",
+            "<=",
+            "=",
+            ">=",
+            ">"});
+            this.guiJoinSubColumn.Location = new System.Drawing.Point(6, 73);
+            this.guiJoinSubColumn.Name = "guiJoinSubColumn";
+            this.guiJoinSubColumn.Size = new System.Drawing.Size(166, 21);
+            this.guiJoinSubColumn.TabIndex = 5;
+            // 
+            // guiJoinTable
+            // 
+            this.guiJoinTable.FormattingEnabled = true;
+            this.guiJoinTable.Location = new System.Drawing.Point(6, 46);
+            this.guiJoinTable.Name = "guiJoinTable";
+            this.guiJoinTable.Size = new System.Drawing.Size(166, 21);
+            this.guiJoinTable.TabIndex = 5;
+            this.guiJoinTable.SelectedIndexChanged += new System.EventHandler(this.guiJoinTable_SelectedIndexChanged);
+            // 
+            // guiJoinMainColumn
+            // 
+            this.guiJoinMainColumn.FormattingEnabled = true;
+            this.guiJoinMainColumn.Location = new System.Drawing.Point(6, 19);
+            this.guiJoinMainColumn.Name = "guiJoinMainColumn";
+            this.guiJoinMainColumn.Size = new System.Drawing.Size(166, 21);
+            this.guiJoinMainColumn.TabIndex = 0;
+            // 
+            // guiJoin
+            // 
+            this.guiJoin.Location = new System.Drawing.Point(6, 100);
+            this.guiJoin.Name = "guiJoin";
+            this.guiJoin.Size = new System.Drawing.Size(166, 23);
+            this.guiJoin.TabIndex = 4;
+            this.guiJoin.Text = "Joining";
+            this.guiJoin.UseVisualStyleBackColor = true;
+            this.guiJoin.Click += new System.EventHandler(this.guiJoin_Click);
             // 
             // guiFilterGroupBox
             // 
@@ -343,30 +408,6 @@
             this.guiQueryTable.UseVisualStyleBackColor = true;
             this.guiQueryTable.Click += new System.EventHandler(this.guiQueryTable_Click);
             // 
-            // guiDGV
-            // 
-            this.guiDGV.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.guiDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.guiDGV.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guiDGV.Location = new System.Drawing.Point(0, 0);
-            this.guiDGV.MultiSelect = false;
-            this.guiDGV.Name = "guiDGV";
-            this.guiDGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.guiDGV.Size = new System.Drawing.Size(528, 268);
-            this.guiDGV.TabIndex = 10;
-            // 
-            // guiDGVJoin
-            // 
-            this.guiDGVJoin.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.guiDGVJoin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.guiDGVJoin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guiDGVJoin.Location = new System.Drawing.Point(0, 0);
-            this.guiDGVJoin.MultiSelect = false;
-            this.guiDGVJoin.Name = "guiDGVJoin";
-            this.guiDGVJoin.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.guiDGVJoin.Size = new System.Drawing.Size(528, 266);
-            this.guiDGVJoin.TabIndex = 11;
-            // 
             // splitContainer2
             // 
             splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -381,16 +422,51 @@
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(this.guiDGVJoin);
-            splitContainer2.Size = new System.Drawing.Size(528, 537);
-            splitContainer2.SplitterDistance = 268;
+            splitContainer2.Size = new System.Drawing.Size(528, 693);
+            splitContainer2.SplitterDistance = 345;
             splitContainer2.SplitterWidth = 3;
             splitContainer2.TabIndex = 12;
+            // 
+            // guiDGV
+            // 
+            this.guiDGV.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.guiDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.guiDGV.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.guiDGV.Location = new System.Drawing.Point(0, 0);
+            this.guiDGV.MultiSelect = false;
+            this.guiDGV.Name = "guiDGV";
+            this.guiDGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.guiDGV.Size = new System.Drawing.Size(528, 345);
+            this.guiDGV.TabIndex = 10;
+            this.guiDGV.SelectionChanged += new System.EventHandler(this.guiDGV_SelectionChanged);
+            // 
+            // guiDGVJoin
+            // 
+            this.guiDGVJoin.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.guiDGVJoin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.guiDGVJoin.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.guiDGVJoin.Location = new System.Drawing.Point(0, 0);
+            this.guiDGVJoin.MultiSelect = false;
+            this.guiDGVJoin.Name = "guiDGVJoin";
+            this.guiDGVJoin.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.guiDGVJoin.Size = new System.Drawing.Size(528, 345);
+            this.guiDGVJoin.TabIndex = 11;
+            // 
+            // guiJoinUpdate
+            // 
+            this.guiJoinUpdate.Location = new System.Drawing.Point(6, 129);
+            this.guiJoinUpdate.Name = "guiJoinUpdate";
+            this.guiJoinUpdate.Size = new System.Drawing.Size(166, 23);
+            this.guiJoinUpdate.TabIndex = 4;
+            this.guiJoinUpdate.Text = "Update SubTable";
+            this.guiJoinUpdate.UseVisualStyleBackColor = true;
+            this.guiJoinUpdate.Click += new System.EventHandler(this.guiJoinUpdate_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(708, 537);
+            this.ClientSize = new System.Drawing.Size(708, 693);
             this.Controls.Add(splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -400,6 +476,7 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
             splitContainer1.ResumeLayout(false);
+            this.guiJoinGroupBox.ResumeLayout(false);
             this.guiFilterGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.guiFilterValue)).EndInit();
             this.guiMathGroupBox.ResumeLayout(false);
@@ -408,12 +485,12 @@
             this.guiSearchGroupBox.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.guiDGV)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guiDGVJoin)).EndInit();
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer2)).EndInit();
             splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.guiDGV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.guiDGVJoin)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -442,6 +519,12 @@
         private System.Windows.Forms.ComboBox guiFilterColumn;
         private System.Windows.Forms.Button guiFilter;
         private System.Windows.Forms.DataGridView guiDGVJoin;
+        private System.Windows.Forms.GroupBox guiJoinGroupBox;
+        private System.Windows.Forms.ComboBox guiJoinSubColumn;
+        private System.Windows.Forms.ComboBox guiJoinTable;
+        private System.Windows.Forms.ComboBox guiJoinMainColumn;
+        private System.Windows.Forms.Button guiJoin;
+        private System.Windows.Forms.Button guiJoinUpdate;
     }
 }
 
